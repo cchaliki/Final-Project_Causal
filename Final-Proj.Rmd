@@ -1,0 +1,25 @@
+---
+title: "Final Project"
+author: "Catherine Chalikian"
+date: "4/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(haven)
+```
+
+```{r}
+dat = read_sav("Representative_3Lands_veg.sav")
+head(dat)
+```
+
+```{r}
+dat2 = read_sav("Student_German_China_veg.sav")
+head(dat2)
+```
+
