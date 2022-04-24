@@ -9,17 +9,88 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-library(haven)
-```
 
 ```{r}
-dat = read_sav("Representative_3Lands_veg.sav")
+library(tidyverse)
+library(ggdag)
+library(broom)
+library(causaldata)
+library(rsample)
+library(visdat)
+library(mice)
+#library(gtsummary)
+library(tipr)
+library(glue)
+library(survey)
+library(smd)
+library(ggplot2)
+```
+
+The data were collected during the Fall semester of 2017 from 581 freshmen enrolled at Oral Roberts University in a class entitled “Introduction to Whole Person Education” which has a required health and physical exercise component consisting of: Steps and Active Minutes goals, a 1-mile field test, and a lifestyle assessment survey. Students utilize a Fitbit to help keep track of their steps and active minutes which are synced with the course gradebook. The student’s semester grade point average was added once the semester was complete. As the grades were retrieved and stored, the dataset was de-identified to ensure confidentiality.
+
+```{r}
+dat = read.csv("FitbitsAndGradesData_Fall2017.csv")
 head(dat)
 ```
+Q: Do regular steps of > 10,000 average steps per day cause higher GPA?
+
+```{r, results = FALSE, warning=FALSE}
+ggplot(dat)+
+  geom_histogram(bins = 30,
+                 aes(x = Steps),
+                 fill = "turquoise3")+
+  geom_label(
+    label = "Average Daily Steps",
+    x = 16500,
+    y = 50
+  )+
+  labs(title = "Frequency of Average Daily Steps")
+```
+
 
 ```{r}
-dat2 = read_sav("Student_German_China_veg.sav")
-head(dat2)
+# visualize data
+dat %>% vis_dat()
+colnames(dat)
+```
+
+
+
+It appears that we no missing data, so we do not need to impute it. Let's move on and brainstorm how these variables might fit together.
+
+Our exposure, the average number of daily steps, could depend on a number of things, including activity level. The variables "FatBurn," "Cardio," and "Peak" measure the number of minutes in the following respective heart rates when compared to max heart rate: 50-69%, 70-84%, and >85%. This means that each of the variables is accounting for different activity, so we will include all of them. Additionally, time available ("Time") and stress levels ("Stress") could impact how many steps a student takes. There is a small distribution of Age, given that this dataset is about Freshman specifically, but it may make a difference. Gender may play a role. And finally distance from campus would likely impact number of steps.
+
+Then, our outcome GPA could be affected by Age, Gender, Study Habits ("Study"), or Major.
+
+```{r, results = FALSE, warning=FALSE}
+ggplot(dat)+
+  geom_histogram(bins = 30,
+                 aes(x = Age),
+                 fill = "turquoise3")+
+  labs(title = "Frequency of Freshman Ages")
+```
+```
+
+
+### DAG
+```{r}
+dag = dagify(
+  Steps ~ Time + Stress + Distance + Peak + FatBurn + Cardio + Minutes + 
+  Age + Gender + Life.Score,
+  GPA ~ Time + Study + Major + Age + Gender + Life.Score,
+  Cardio ~ Gender
+)
+```
+
+### Variable Exploration
+```{r}
+hist(dat$Minutes)
+```
+
+```{r}
+runners = filter(dat, Mode == 1)
+walkers = filter(dat, Mode == 0)
+hist(runners$Minutes)
+hist(walkers$Minutes)
 ```
 
