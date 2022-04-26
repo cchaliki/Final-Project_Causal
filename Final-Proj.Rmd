@@ -18,26 +18,30 @@ library(causaldata)
 library(rsample)
 library(visdat)
 library(mice)
-#library(gtsummary)
+library(gtsummary)
 library(tipr)
 library(glue)
 library(survey)
 library(smd)
-library(ggplot2)
 ```
 
 The data were collected during the Fall semester of 2017 from 581 freshmen enrolled at Oral Roberts University in a class entitled “Introduction to Whole Person Education” which has a required health and physical exercise component consisting of: Steps and Active Minutes goals, a 1-mile field test, and a lifestyle assessment survey. Students utilize a Fitbit to help keep track of their steps and active minutes which are synced with the course gradebook. The student’s semester grade point average was added once the semester was complete. As the grades were retrieved and stored, the dataset was de-identified to ensure confidentiality.
 
 ```{r}
 dat = read.csv("FitbitsAndGradesData_Fall2017.csv")
+names(dat) = tolower(names(dat))
 head(dat)
 ```
-Q: Do regular steps of > 10,000 average steps per day cause higher GPA?
+## Do regular steps of > 10,000 average steps per day cause higher GPA?
+
+### Some particulars
+
+To answer this question, we will look at a dataset of 581 incoming Freshman at Oral Robert University (ORU) in 2017. The dataset comes from a class called “Introduction to Whole Person Education”, which required several health measures, including a timed mile, daily steps tracked by Fitbit, and daily active minutes in different heart rate zones. The 10,000 step mark is both from common recommendations, as well as the course recommendation. To ensure that this was a reasonable measure--that there would be sufficient treatment and control populations--we looked at the histogram below. There are indeed numnerous participants in both groups.
 
 ```{r, results = FALSE, warning=FALSE}
 ggplot(dat)+
   geom_histogram(bins = 30,
-                 aes(x = Steps),
+                 aes(x = steps),
                  fill = "turquoise3")+
   geom_label(
     label = "Average Daily Steps",
@@ -47,40 +51,107 @@ ggplot(dat)+
   labs(title = "Frequency of Average Daily Steps")
 ```
 
-
+## Missing Data? Nope.
 ```{r}
 # visualize data
 dat %>% vis_dat()
-colnames(dat)
+```
+
+It appears that we no missing data, so we do not need to impute it. Let's move on and brainstorm how these variables might fit together. However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not.
+
+```{r}
+# make our exposure var stepsT
+dat$stepsT = ifelse(dat$steps > 10000, 1, 0)
+
+# make gender factor var
+dat$gender = factor(dat$gender)
+head(dat)
 ```
 
 
+## What are the relationships of the variables?
 
-It appears that we no missing data, so we do not need to impute it. Let's move on and brainstorm how these variables might fit together.
+Our exposure, the average number of daily steps, could depend on a number of things, including activity level. The variables "fatburn," "cardio," and "peak" measure the number of minutes in the following respective heart rates when compared to max heart rate: 50-69%, 70-84%, and >85%. This means that each of the variables is accounting for different activity, so we will include all of them. Additionally, stress levels ("stress") could impact how many steps a student takes. There is a small distribution of Age, given that this dataset is about Freshman specifically, but it may make a difference. Gender may play a role. And finally distance from campus would likely impact number of steps. The ORU course also calculated a single score called life.ccore based on a 35-question survey. This included more inclusive elements of health, such as alcohol and drug use, psychological condition, spritiruality, and nutrition in addition to fitness. The lower the score, the healthier the person.
 
-Our exposure, the average number of daily steps, could depend on a number of things, including activity level. The variables "FatBurn," "Cardio," and "Peak" measure the number of minutes in the following respective heart rates when compared to max heart rate: 50-69%, 70-84%, and >85%. This means that each of the variables is accounting for different activity, so we will include all of them. Additionally, time available ("Time") and stress levels ("Stress") could impact how many steps a student takes. There is a small distribution of Age, given that this dataset is about Freshman specifically, but it may make a difference. Gender may play a role. And finally distance from campus would likely impact number of steps.
+Then, our outcome GPA could be affected by age, gender, study habits ("study"), major, and life.score.
 
-Then, our outcome GPA could be affected by Age, Gender, Study Habits ("Study"), or Major.
+Based on gender stereotypes, we think that cardio, fatburn, and peak could be influenced by gender.
 
 ```{r, results = FALSE, warning=FALSE}
 ggplot(dat)+
   geom_histogram(bins = 30,
-                 aes(x = Age),
+                 aes(x = age),
                  fill = "turquoise3")+
   labs(title = "Frequency of Freshman Ages")
 ```
-```
-
-
-### DAG
 ```{r}
 dag = dagify(
-  Steps ~ Time + Stress + Distance + Peak + FatBurn + Cardio + Minutes + 
-  Age + Gender + Life.Score,
-  GPA ~ Time + Study + Major + Age + Gender + Life.Score,
-  Cardio ~ Gender
+  stepsT ~ stress + distance + peak + fatburn + cardio + minutes +
+    age + gender + life.score,
+  gpa ~ study + major + age + gender + life.score,
+  cardio ~ gender,
+  fatburn ~ gender,
+  peak ~ gender,
+  exposure = "stepsT",
+  outcome = "gpa"
 )
+
+dag %>%
+  ggdag()+
+  geom_dag_node(color = "turquoise3")+
+  geom_dag_text(color = "gray40") +
+  theme_dag_gray()
 ```
+
+We can visualize the previously described relashionships with the above Directed Acylcic Graph (DAG). Operations on this figure can help us identify which variables are confounders, influencing both the exposure and the outcome, as well as identify which covariates we need to adjust for to effectively close off this influence. So, that's what we'll do next with our open paths and adjustment sets.
+
+```{r}
+dag %>% ggdag_paths()+
+  geom_dag_node(color = "turquoise3")+
+  geom_dag_text(color = "gray40") # add labels
+```
+
+There are numerous open or backdoor paths that could lead us to a spurious result. Now let's see what we should adjust for to avoid such calamity.
+
+```{r}
+dag %>% ggdag_adjustment_set()
+```
+
+Our adjustment set is composed of the covariates *age*, *gender*, and *life.score*. We know that if assignment to treatment is unconfounded given the full set of covariates, then the assignment is also unconfounded by conditioning only on the propensity score, so we condition on the propensity score. This means that it's time to build a propensity score model!
+
+### Propensity Scores and More
+
+```{r}
+# propensity score, unweighted
+glm1 = glm(stepsT ~ age + gender + life.score,
+           data = dat,
+           family = binomial())
+
+# adding propensity scores to model
+dat = glm1 %>% augment(type.predict = "response",
+                       data = dat)
+```
+
+Let's see how our populations compare without weighting.
+
+```{r}
+svy_des = svydesign(
+  ids = ~1,
+  data = dat
+)
+
+table1 = svy_des %>% tbl_svysummary(
+  by = stepsT,
+  include = c("age", "gender", "life.score")
+) %>%
+  add_overall()
+table1
+```
+
+The treatment population is larger than the control. Since the data is on an incoming Freshman class, it is unsurprising that the distributions of age are the same. With males as "0", we see that more females were assigned to the treatment group.
+
+We are going to weight the 
+
 
 ### Variable Exploration
 ```{r}
