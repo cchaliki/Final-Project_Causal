@@ -32,7 +32,7 @@ dat = read.csv("FitbitsAndGradesData_Fall2017.csv")
 names(dat) = tolower(names(dat))
 head(dat)
 ```
-## Do regular steps of > 10,000 average steps per day cause higher GPA?
+## Do regular steps of > 10,000 average steps per day cause higher GPA in 2017 Freshman at Oral Roberts University?
 
 ### Some particulars
 
@@ -150,18 +150,196 @@ table1
 
 The treatment population is larger than the control. Since the data is on an incoming Freshman class, it is unsurprising that the distributions of age are the same. With males as "0", we see that more females were assigned to the treatment group.
 
-We are going to weight the 
-
-
-### Variable Exploration
-```{r}
-hist(dat$Minutes)
-```
+We are going to use Average Treatment Effect of the Control (AT) to weight these measures, because we want to compare the causal effect on GPAs between the two groups.
 
 ```{r}
-runners = filter(dat, Mode == 1)
-walkers = filter(dat, Mode == 0)
-hist(runners$Minutes)
-hist(walkers$Minutes)
+# add at3 weights
+dat = dat %>%
+  mutate(w_ate = stepsT/.fitted + 
+           (1 - stepsT)/(1 - .fitted))
 ```
+
+```{r, results = FALSE, warning=FALSE, message = FALSE}
+svy_des = svydesign(
+  ids = ~1,
+  data = dat,
+  weights = ~w_ate
+)
+
+wtable1 = svy_des %>% 
+  tbl_svysummary(by = stepsT,
+                 include = c("age", "gender", "life.score")) %>%
+  add_overall()
+
+wtable1
+```
+
+Let's see how the populations look now.
+
+```{r, results = FALSE, warning=FALSE}
+# prepare data for unweighted mirror plot
+df_plot_ps = dat %>%
+  tidyr::pivot_wider(names_from = stepsT,
+                     values_from = .fitted,
+                     names_prefix = "steps_p")
+# plot
+ggplot(df_plot_ps)+
+  geom_histogram(bins = 25,
+                 aes(x = steps_p1),
+                 fill = "turquoise3")+
+  geom_histogram(bins = 25,
+                 alpha = .5,
+                 aes(x = steps_p1,
+                     weight = dat$w_ate),
+                 fill = "turquoise3")+
+  geom_histogram(bins = 25,
+                 aes(x = steps_p0,
+                     y = -stat(count)),
+                 fill = "tomato3")+
+  geom_histogram(bins = 25,
+                 alpha = .5,
+                 aes(x = steps_p0,
+                     weight = dat$w_ate,
+                     y = -stat(count)),
+                 fill = "tomato3")+
+  scale_y_continuous("count", label = abs) + 
+  scale_x_continuous("propensity score") +
+  geom_label(
+    label = "> 10,000 Steps", 
+    # x and y gives where the label will land
+    x = 0.4,
+    y = 35,
+  ) + 
+  geom_label(
+    label = "< 10,000 Steps",
+    x = 0.4, 
+    y = -42
+  ) + 
+  labs(title = "Weighted Distributions of High Steppers and Low Steppers")
+
+```
+
+Who is that High Step person with the lowest propensity score? We'll explore later.
+
+### Checking out the model
+
+Okay, we weighted the populations so that each look like the treated group, but is it a valid model? We're going to run some tests to find out.
+
+#### Love Plot
+
+```{r,results = FALSE, warning=FALSE}
+# add smds to model
+smds = dat %>%
+  summarize(
+    across(
+      c("age", "gender", "life.score"),
+      list(unweighted = ~smd(.x, stepsT)$estimate,
+           att.weighted = ~smd(.x, stepsT, w_ate)$estimate)
+    )
+  )
+
+plot_df_smds = smds %>%
+  pivot_longer(
+    everything(),
+    values_to = "SMD",
+    names_to = c("variable", "Method"),
+    names_pattern = "(.*)_(.*)") %>%
+  arrange(desc(Method), abs(SMD)) %>%
+  mutate(variable = fct_inorder(variable))
+
+ggplot(
+  data = plot_df_smds,
+  aes(x = abs(SMD), y = variable,
+      group = Method, color = Method)
+) +
+  geom_line(orientation = "y")+
+  geom_point()+
+  geom_vline(xintercept = .1,
+             color = "black", size = .1)+
+  ggtitle("Love Plot ATE vs Unweighted")
+```
+
+It looks like the weighting brought the covariates closer to balance. All covariates are far below the rule of thumb 0.1 mark.
+
+#### ECDF
+
+```{r,results = FALSE, warning=FALSE}
+# create weighted cdf plot for age and income
+
+# df for exposed, age
+ecdf_1a = dat %>%
+  filter(stepsT == 1) %>%
+  arrange(age) %>%
+  mutate(cum_pct = cumsum(w_ate)/sum(w_ate))
+
+# df for unexposed, age
+ecdf_0a = dat %>%
+  filter(stepsT == 0) %>%
+  arrange(age) %>%
+  mutate(cum_pct = cumsum(w_ate)/sum(w_ate))
+
+#plot
+ggplot(ecdf_1a, aes(x = age, y = cum_pct)) +
+  geom_line(color = "Turquoise3") +
+  scale_color_manual("> 10,000 Steps",
+                     values = c("Blue", "Brown"),
+                     labels = c("No", "Yes"))+
+  geom_line(data = ecdf_0a,
+            aes(x = age, y = cum_pct),
+            color = "Blue") +
+  xlab("Age") +
+  ylab("Proportion <= x")+
+  ggtitle("Weighted ECDF for Age")
+```
+
+Our continuous varaible *age* matches well, both before and after weighting. There doesn't seem to be any non-linearity present, so we will proceed to estimation!
+
+### Cause Estimates
+
+```{r}
+dat %>%
+  summarise(
+    ate = sum(gpa*stepsT*w_ate)/sum(stepsT*w_ate) - sum(gpa*(1 - stepsT)*w_ate)/
+      sum((1-stepsT)*w_ate)
+  )
+```
+
+This is our point estimate. On average, a ORU freshman who had daily average steps over 10,000 had a GPA 0.5 higher. That sounds impressive, but how certain are we about this?
+
+```{r}
+fit_ipw <- function(split) {
+  .df <- analysis(split)
+  
+  # fit propensity score model
+  propensity_model <- glm(
+    stepsT ~ age + gender + life.score,
+    family = binomial(), 
+    data = .df
+  )
+  # calculate inverse probability weights
+  .df <- propensity_model %>% 
+    
+    # get propensity scores 
+    augment(type.predict = "response", data = .df) %>% 
+    # add ATE to df
+    mutate(wts = stepsT / .fitted + (1 - stepsT) / (1  - .fitted)) 
+  
+  # fit outcome model
+  lm(gpa ~ stepsT, data = .df, weights = wts) %>%
+    tidy()
+}
+
+#fit ipw model
+ipw_results = bootstraps(dat, 1000, apparent = TRUE) %>%
+  mutate(results = map(splits, fit_ipw))
+
+# get t-statistic-based CIs
+boot_estimate = int_t(ipw_results, results) %>%
+  filter(term == "stepsT")
+
+boot_estimate
+```
+
+We are 95% confident that the true causal effect of a daily average of more than 10,000 steps for ORU freshman is (0.3749, 0.6204). There is strong evidence that high volume daily steps has a positive impact on a student's GPA.
+
 
