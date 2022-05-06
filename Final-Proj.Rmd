@@ -2,7 +2,9 @@
 title: "Final Project"
 author: "Catherine Chalikian"
 date: "5/6/2022"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -27,7 +29,7 @@ library(smd)
 ```
 
 
-## Do regular steps of > 10,000 average steps per day cause higher GPA in 2017 Freshman at Oral Roberts University?
+## Do regular steps of > 10,000 average steps per day cause a higher GPA in 2017 Freshman at Oral Roberts University?
 
 To answer this question, we will look at a dataset of 581 incoming Freshman at Oral Robert University (ORU) in 2017. The dataset comes from a class called “Introduction to Whole Person Education”, which required several health measures, including a timed mile, daily steps tracked by Fitbit, and daily active minutes in different heart rate zones. The 10,000 step mark is both from common recommendations, as well as the course recommendation. To ensure that this was a reasonable measure--that there would be sufficient treatment and control populations--we looked at the histogram below. There are indeed numerous participants in both groups.
 
@@ -55,7 +57,7 @@ ggplot(dat)+
 dat %>% vis_dat()
 ```
 
-It appears that we no missing data, so we do not need to impute it.However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make gender a factor variable so that we can get the most information during all of our analysis. 
+It appears that we no missing data, so we do not need to impute it.However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make *gender* a factor variable so that we can get the most information during all of our analysis. 
 
 ```{r}
 # make our exposure var stepsT
@@ -80,11 +82,11 @@ ggplot(dat)+
 ```
 
 
-but it may make a difference. *Gender* may play a role. And finally *distance* from campus would likely impact number of steps. The ORU course also calculated a single score called *life.score* based on a 35-question survey. This included more comprehensive elements of health, such as alcohol and drug use, psychological condition, spirituality, and nutrition in addition to fitness. The lower the score, the healthier the person.
+but it may make a difference. *Gender* may play a role. And finally *distance* from campus would likely impact number of steps. The ORU course also calculated a single score called *life score* based on a 35-question survey. This included more comprehensive elements of health, such as alcohol and drug use, psychological condition, spirituality, and nutrition in addition to fitness. The lower the score, the healthier the person.
 
-Then, our outcome GPA could be affected by age, gender, study habits ("study"), major, and life.score.
+Then, our outcome *GPA* could be affected by *age*, *gender*, study habits (*study*), *major*, and *life score*.
 
-Based on gender stereotypes, we think that cardio, fatburn, and peak could be influenced by gender.
+Based on gender stereotypes, we think that *cardio*, *fatburn*, and *peak* could be influenced by *gender*.
 
 
 ```{r}
@@ -139,7 +141,7 @@ dat = glm1 %>% augment(type.predict = "response",
 
 Let's see how our populations compare without weighting.
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 svy_des = svydesign(
   ids = ~1,
   data = dat
@@ -155,7 +157,7 @@ table1
 
 The treatment population is larger than the control. Since the data is on an incoming Freshman class, it is unsurprising that the distributions of age are the same. With males as "0", we see that more females were assigned to the treatment group.
 
-We are going to use Average Treatment Effect of the Control (AT) to weight these measures, because we want to compare the causal effect on GPAs between the two groups.
+We are going to use Average Treatment Effect of the Control (ATE) to weight these measures, because we want to compare the population as a whole. 
 
 ```{r}
 # add at3 weights
@@ -227,7 +229,8 @@ ggplot(df_plot_ps)+
 Who are those High Step people with the low propensity scores? I suspect this has to do with age, but we'll check it out. We start by sorting those with low propensity scores (< .45) from lowest to highest, and see that *age* and *gender* seem to move with propensity score.
 
 ```{r}
-lowps_indiv = dat %>% filter(.fitted < .45) %>% select(stepsT, age, gender, life.score, .fitted)
+lowps_indiv = dat %>% filter(.fitted < .45) %>% select(stepsT, age, gender, 
+                                                       life.score, .fitted)
 arrange(lowps_indiv, .fitted)
 ```
 
@@ -260,7 +263,7 @@ ggplot(dat, aes(x = gender, y = age, color = lowps))+
   
 ```
 
-We see that lower propensity scores occur primarily with older students, and do not seem to be as strongly tied to *gender* or life score. While there are more males (0 indicator) with low propensity scores, *age* seems to be more relevant. So, when running the propensity score model with logistic regression, older students are more likely to belong to the control group, even if they do have a healthy lifestyle, as indicated by *life score*.
+We see that lower propensity scores occur primarily with older students, and do not seem to be as strongly tied to *gender* or *life score*. While there are more males (0 indicator) with low propensity scores, *age* seems to be more relevant. So, when running the propensity score model with logistic regression, older students are more likely to belong to the control group, even if they do have a healthy lifestyle, as indicated by *life score*.
 
 
 ### Checking out the model
@@ -334,7 +337,7 @@ ggplot(ecdf_1a, aes(x = age, y = cum_pct)) +
   ggtitle("Weighted ECDF for Age")
 ```
 
-Our continuous varaible *age* matches well, both before and after weighting. There doesn't seem to be any non-linearity present, so we will proceed to estimation!
+Our continuous variable *age* matches well, both before and after weighting. There doesn't seem to be any non-linearity present, so we will proceed to estimation!
 
 ### Causal Estimates
 
@@ -389,7 +392,7 @@ Based on a bootstrap interval, we are 95% confident that the true causal effect 
 
 It seems that, conditioning on *age*, *gender*, and *life score*, we have a causal effect, but what if we missed a confounder? How would the model change? It's time for sensitivity analysis. We are going to look at different standardized mean differences (SMDs). 
 
-```{r,results = FALSE, warning=FALSE}
+```{r,results = FALSE, warning=FALSE, message=FALSE}
 smds = c(.25, .5, .75)
 tips1 = tip_lm(effect = .5,
         smd = smds) 
@@ -415,6 +418,8 @@ Because we are looking at a causal effect on GPA, there is a relatively small do
 It's pretty cool that we found a causal effect, but I wonder, does a large daily step volume cause some phsyiological change that improves cognition and therefore GPA? Or is is it specifically this level of daily steps that impacts GPA? I other words, what is the causal mechanism? We would need to do mediation analysis to determine this. 
 
 
-
+#### Sources
+Allie M. Broaddus, Brandon J. Jaquis, Colt B. Jones, Scarlet R. Jost, Andrew S.I.D. Lang, Ailin Li, Qiwen Li, Philip P. Nelson & Esther M. Spear (2019): Fitbits, field-tests, and grades: The effects of a healthy and physically active lifestyle on the academic performance of first year college students, International Journal of Sport and Exercise Psychology, DOI:
+10.1080/1612197X.2019.1623062, https://www.tandfonline.com/doi/full/10.1080/1612197X.2019.1623062
 
 
