@@ -284,7 +284,7 @@ names(dat) = tolower(names(dat))</code></pre>
 <pre class="r"><code># visualize data
 dat %&gt;% vis_dat()</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>It appears that we no missing data, so we do not need to impute it.However, we do need to create a variable denoting treatment or control. As of now, our exposure <em>steps</em> is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make <em>gender</em> a factor variable so that we can get the most information during all of our analysis.</p>
+<p>It appears that we no missing data, so we do not need to impute it. However, we do need to create a variable denoting treatment or control. As of now, our exposure <em>steps</em> is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make <em>gender</em> a factor variable so that we can get the most information during all of our analysis.</p>
 <pre class="r"><code># make our exposure var stepsT
 dat$stepsT = ifelse(dat$steps &gt; 10000, 1, 0)
 
@@ -354,12 +354,12 @@ table1 = svy_des %&gt;% tbl_svysummary(
 ) %&gt;%
   add_overall()
 table1</code></pre>
-<div id="asnvynhzru" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="bvrriioeiw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#asnvynhzru .gt_table {
+#bvrriioeiw .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -384,7 +384,7 @@ table1</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_heading {
+#bvrriioeiw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -396,7 +396,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_title {
+#bvrriioeiw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -408,7 +408,7 @@ table1</code></pre>
   border-bottom-width: 0;
 }
 
-#asnvynhzru .gt_subtitle {
+#bvrriioeiw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -420,13 +420,13 @@ table1</code></pre>
   border-top-width: 0;
 }
 
-#asnvynhzru .gt_bottom_border {
+#bvrriioeiw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_col_headings {
+#bvrriioeiw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -441,7 +441,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_col_heading {
+#bvrriioeiw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -461,7 +461,7 @@ table1</code></pre>
   overflow-x: hidden;
 }
 
-#asnvynhzru .gt_column_spanner_outer {
+#bvrriioeiw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -473,15 +473,15 @@ table1</code></pre>
   padding-right: 4px;
 }
 
-#asnvynhzru .gt_column_spanner_outer:first-child {
+#bvrriioeiw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#asnvynhzru .gt_column_spanner_outer:last-child {
+#bvrriioeiw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#asnvynhzru .gt_column_spanner {
+#bvrriioeiw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -493,7 +493,7 @@ table1</code></pre>
   width: 100%;
 }
 
-#asnvynhzru .gt_group_heading {
+#bvrriioeiw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -518,7 +518,7 @@ table1</code></pre>
   vertical-align: middle;
 }
 
-#asnvynhzru .gt_empty_group_heading {
+#bvrriioeiw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -533,15 +533,15 @@ table1</code></pre>
   vertical-align: middle;
 }
 
-#asnvynhzru .gt_from_md > :first-child {
+#bvrriioeiw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#asnvynhzru .gt_from_md > :last-child {
+#bvrriioeiw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#asnvynhzru .gt_row {
+#bvrriioeiw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -560,7 +560,7 @@ table1</code></pre>
   overflow-x: hidden;
 }
 
-#asnvynhzru .gt_stub {
+#bvrriioeiw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -573,7 +573,7 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#asnvynhzru .gt_stub_row_group {
+#bvrriioeiw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -587,11 +587,11 @@ table1</code></pre>
   vertical-align: top;
 }
 
-#asnvynhzru .gt_row_group_first td {
+#bvrriioeiw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#asnvynhzru .gt_summary_row {
+#bvrriioeiw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -601,16 +601,16 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#asnvynhzru .gt_first_summary_row {
+#bvrriioeiw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_first_summary_row.thick {
+#bvrriioeiw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#asnvynhzru .gt_last_summary_row {
+#bvrriioeiw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -620,7 +620,7 @@ table1</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_grand_summary_row {
+#bvrriioeiw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -630,7 +630,7 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#asnvynhzru .gt_first_grand_summary_row {
+#bvrriioeiw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -640,11 +640,11 @@ table1</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_striped {
+#bvrriioeiw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#asnvynhzru .gt_table_body {
+#bvrriioeiw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -653,7 +653,7 @@ table1</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_footnotes {
+#bvrriioeiw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -667,7 +667,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_footnote {
+#bvrriioeiw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -676,7 +676,7 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#asnvynhzru .gt_sourcenotes {
+#bvrriioeiw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -690,7 +690,7 @@ table1</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#asnvynhzru .gt_sourcenote {
+#bvrriioeiw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -698,60 +698,60 @@ table1</code></pre>
   padding-right: 5px;
 }
 
-#asnvynhzru .gt_left {
+#bvrriioeiw .gt_left {
   text-align: left;
 }
 
-#asnvynhzru .gt_center {
+#bvrriioeiw .gt_center {
   text-align: center;
 }
 
-#asnvynhzru .gt_right {
+#bvrriioeiw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#asnvynhzru .gt_font_normal {
+#bvrriioeiw .gt_font_normal {
   font-weight: normal;
 }
 
-#asnvynhzru .gt_font_bold {
+#bvrriioeiw .gt_font_bold {
   font-weight: bold;
 }
 
-#asnvynhzru .gt_font_italic {
+#bvrriioeiw .gt_font_italic {
   font-style: italic;
 }
 
-#asnvynhzru .gt_super {
+#bvrriioeiw .gt_super {
   font-size: 65%;
 }
 
-#asnvynhzru .gt_footnote_marks {
+#bvrriioeiw .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#asnvynhzru .gt_asterisk {
+#bvrriioeiw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#asnvynhzru .gt_slash_mark {
+#bvrriioeiw .gt_slash_mark {
   font-size: 0.7em;
   line-height: 0.7em;
   vertical-align: 0.15em;
 }
 
-#asnvynhzru .gt_fraction_numerator {
+#bvrriioeiw .gt_fraction_numerator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: 0.45em;
 }
 
-#asnvynhzru .gt_fraction_denominator {
+#bvrriioeiw .gt_fraction_denominator {
   font-size: 0.6em;
   line-height: 0.6em;
   vertical-align: -0.05em;
@@ -1003,7 +1003,7 @@ boot_estimate</code></pre>
 <pre><code>## # A tibble: 1 × 6
 ##   term   .lower .estimate .upper .alpha .method  
 ##   &lt;chr&gt;   &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;    
-## 1 stepsT  0.379     0.500  0.634   0.05 student-t</code></pre>
+## 1 stepsT  0.384     0.500  0.614   0.05 student-t</code></pre>
 <p>Based on a bootstrap interval, we are 95% confident that the true causal effect of a daily average of more than 10,000 steps for ORU freshman is (0.3749, 0.6204). There is strong evidence that high volume daily steps has a positive impact on a student’s GPA.</p>
 </div>
 <div id="butwhat-if" class="section level3">
@@ -1021,11 +1021,12 @@ tips1</code></pre>
   ggtitle(&quot;Outcome Association vs. SMD&quot;)</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>The above analysis uses the point estimate of 0.5 and confidence of 95%. When the SMD is smaller, measured at 0.25, if we had one missing (unmeasured) confounder, the confounder would need to have an outcome association of 2 to “tip” the outcome effect to 0. At this point, the observed effect would no longer be significant. If the missing confounder had an SMD of 0.5, it would need an association of 1 to render the outcome effect null. Along the same lines, with a large SMD of 0.75, the unmeasured confounder would need an outcome association of 0.667 to negate the outcome effect.</p>
-<p>Because we are looking at a causal effect on GPA, there is a relatively small domain. Typically, GPAs range from 0 to 4.0, so an outcome association of 2 and 1 is large. We would need a huge, unmeasured confounder to nullify our results.</p>
 </div>
 <div id="next-steps" class="section level3">
 <h3>Next Steps</h3>
-<p>It’s pretty cool that we found a causal effect, but I wonder, does a large daily step volume cause some phsyiological change that improves cognition and therefore GPA? Or is is it specifically this level of daily steps that impacts GPA? I other words, what is the causal mechanism? We would need to do mediation analysis to determine this.</p>
+<p>It’s pretty cool that we found a causal effect, but I wonder, does a large daily step volume cause some phsyiological change that improves cognition and therefore GPA? Or is there a behavioral/psychological link? In other words, what is the causal mechanism? Is there a mediator or does a high daily step average directly cause the increase in GPA? We would need to do mediation analysis to determine this.</p>
+<p>We need to regress the link between more than 10,000 steps a day and cognitive function, as well as cognitive function and GPA, then compare the results to our current causal effect. Ideally, we would create a randomized controlled experiement to determine the causal effects on these two paths. First, we could recruit ORU Freshman to the study and randomly assign them to the treatment of taking on average over 10,000 steps daily or the control. In order to promote adherence to treatment group behaviors, control group members may receive a scooter or other device to limit steps. If admissible, automated messages (not monitored by researchers) could be sent to encourage the exposure group to get their steps in and the control group to slow down their efforts. After a semester of the prescribed exposure, participants would undergo cognitive evaluation in clinic.</p>
+<p>It may be more difficult to get a randomized control study to determine causal effect between cognition and GPA, since we cannot necessarily assign people the same way. We can’t really say, “You have will have high cognitive abilities this semester. You, not so much.” This would have to be another study, regressing the observations, similar to what we did earlier with the ORU dataset.</p>
 <div id="sources" class="section level4">
 <h4>Sources</h4>
 <p>Allie M. Broaddus, Brandon J. Jaquis, Colt B. Jones, Scarlet R. Jost, Andrew S.I.D. Lang, Ailin Li, Qiwen Li, Philip P. Nelson &amp; Esther M. Spear (2019): Fitbits, field-tests, and grades: The effects of a healthy and physically active lifestyle on the academic performance of first year college students, International Journal of Sport and Exercise Psychology, DOI: 10.1080/1612197X.2019.1623062, <a href="https://www.tandfonline.com/doi/full/10.1080/1612197X.2019.1623062" class="uri">https://www.tandfonline.com/doi/full/10.1080/1612197X.2019.1623062</a></p>
