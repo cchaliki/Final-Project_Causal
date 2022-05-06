@@ -1,0 +1,9 @@
+name: "Final Project"
+
+navbar:
+
+  - title: "Step Up Academically"
+  
+    href: index.html
+  
+output_dir: "."
