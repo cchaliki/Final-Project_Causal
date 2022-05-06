@@ -25,7 +25,7 @@ library(survey)
 library(smd)
 ```
 
-The data were collected during the Fall semester of 2017 from 581 freshmen enrolled at Oral Roberts University in a class entitled “Introduction to Whole Person Education” which has a required health and physical exercise component consisting of: Steps and Active Minutes goals, a 1-mile field test, and a lifestyle assessment survey. Students utilize a Fitbit to help keep track of their steps and active minutes which are synced with the course gradebook. The student’s semester grade point average was added once the semester was complete. As the grades were retrieved and stored, the dataset was de-identified to ensure confidentiality.
+
 
 ```{r}
 dat = read.csv("FitbitsAndGradesData_Fall2017.csv")
@@ -114,7 +114,9 @@ dag %>% ggdag_paths()+
 There are numerous open or backdoor paths that could lead us to a spurious result. Now let's see what we should adjust for to avoid such calamity.
 
 ```{r}
-dag %>% ggdag_adjustment_set()
+dag %>% ggdag_adjustment_set()+
+  geom_dag_text(color = "gray40") # add labels
+  
 ```
 
 Our adjustment set is composed of the covariates *age*, *gender*, and *life.score*. We know that if assignment to treatment is unconfounded given the full set of covariates, then the assignment is also unconfounded by conditioning only on the propensity score, so we condition on the propensity score. This means that it's time to build a propensity score model!
@@ -215,11 +217,16 @@ ggplot(df_plot_ps)+
     x = 0.4, 
     y = -42
   ) + 
-  labs(title = "Weighted Distributions of High Steppers and Low Steppers")
+  labs(title = "Weighted Distributions of High and Low Volume Steppers")
 
 ```
 
-Who is that High Step person with the lowest propensity score? We'll explore later.
+Who is that High Step person with the lowest propensity score? I suspect this has to do with age, but we'll check it out.
+
+```{r}
+dat %>% filter(.fitted < .3)
+```
+
 
 ### Checking out the model
 
@@ -341,5 +348,38 @@ boot_estimate
 ```
 
 We are 95% confident that the true causal effect of a daily average of more than 10,000 steps for ORU freshman is (0.3749, 0.6204). There is strong evidence that high volume daily steps has a positive impact on a student's GPA.
+
+
+### But...What if...?
+
+It seems that, conditioning on *age*, *gender*, and *life score*, we have a causal effect, but what if we missed a confounder? How would the model change? It's time for sensitivity analysis. We are going to look at different standardized mean differences (SMDs). 
+
+```{r,results = FALSE, warning=FALSE}
+smds = c(.25, .5, .75)
+tips1 = tip_lm(effect = .5,
+        smd = smds) 
+tips1
+```
+
+```{r}
+tips1 %>%
+  ggplot()+
+  geom_line(aes(x = smds, y = outcome_association))+
+  xlab("SMDs") +
+  ylab("Outcome Association")+
+  ggtitle("Outcome Association vs. SMD")
+```
+
+
+The above analysis uses the point estimate of 0.5 and confidence of 95%. When the SMD is smaller, measured at 0.25, if we had one missing (unmeasured) confounder, the confounder would need to have an outcome association of 2 to "tip" the outcome effect to 0. At this point, the observed effect would no longer be significant. If the missing confounder had an SMD of 0.5, it would need an association of 1 to render the outcome effect null. Along the same lines, with a large SMD of 0.75, the unmeasured confounder would need an outcome association of 0.667 to negate the outcome effect.
+
+Because we are looking at a causal effect on GPA, there is a relatively small domain. Typically, GPAs range from 0 to 4.0, so an outcome association of 2 and 1 is large. We would need a huge, unmeasured confounder to nullify our results.
+
+### Next Steps
+
+It's pretty cool that we found a causal effect, but I wonder, does a large daily step volume cause some phsyiological change that improves cognition and therefore GPA? Or is is it specifically this level of daily steps that impacts GPA? I other words, what is the causal mechanism? We would need to do mediation analysis to determine this. 
+
+
+
 
 
