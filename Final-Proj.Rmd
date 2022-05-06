@@ -1,7 +1,7 @@
 ---
 title: "Final Project"
 author: "Catherine Chalikian"
-date: "4/21/2022"
+date: "5/6/2022"
 output: html_document
 ---
 
@@ -10,7 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r}
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+printFlag = FALSE
 library(tidyverse)
 library(ggdag)
 library(broom)
@@ -26,17 +27,14 @@ library(smd)
 ```
 
 
+## Do regular steps of > 10,000 average steps per day cause higher GPA in 2017 Freshman at Oral Roberts University?
+
+To answer this question, we will look at a dataset of 581 incoming Freshman at Oral Robert University (ORU) in 2017. The dataset comes from a class called “Introduction to Whole Person Education”, which required several health measures, including a timed mile, daily steps tracked by Fitbit, and daily active minutes in different heart rate zones. The 10,000 step mark is both from common recommendations, as well as the course recommendation. To ensure that this was a reasonable measure--that there would be sufficient treatment and control populations--we looked at the histogram below. There are indeed numerous participants in both groups.
 
 ```{r}
 dat = read.csv("FitbitsAndGradesData_Fall2017.csv")
 names(dat) = tolower(names(dat))
-head(dat)
 ```
-## Do regular steps of > 10,000 average steps per day cause higher GPA in 2017 Freshman at Oral Roberts University?
-
-### Some particulars
-
-To answer this question, we will look at a dataset of 581 incoming Freshman at Oral Robert University (ORU) in 2017. The dataset comes from a class called “Introduction to Whole Person Education”, which required several health measures, including a timed mile, daily steps tracked by Fitbit, and daily active minutes in different heart rate zones. The 10,000 step mark is both from common recommendations, as well as the course recommendation. To ensure that this was a reasonable measure--that there would be sufficient treatment and control populations--we looked at the histogram below. There are indeed numnerous participants in both groups.
 
 ```{r, results = FALSE, warning=FALSE}
 ggplot(dat)+
@@ -52,12 +50,12 @@ ggplot(dat)+
 ```
 
 ## Missing Data? Nope.
-```{r}
+```{r, warning = FALSE}
 # visualize data
 dat %>% vis_dat()
 ```
 
-It appears that we no missing data, so we do not need to impute it. Let's move on and brainstorm how these variables might fit together. However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not.
+It appears that we no missing data, so we do not need to impute it.However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make gender a factor variable so that we can get the most information during all of our analysis. 
 
 ```{r}
 # make our exposure var stepsT
@@ -65,25 +63,30 @@ dat$stepsT = ifelse(dat$steps > 10000, 1, 0)
 
 # make gender factor var
 dat$gender = factor(dat$gender)
-head(dat)
 ```
-
+Let's move on and brainstorm how these variables might fit together. 
 
 ## What are the relationships of the variables?
 
-Our exposure, the average number of daily steps, could depend on a number of things, including activity level. The variables "fatburn," "cardio," and "peak" measure the number of minutes in the following respective heart rates when compared to max heart rate: 50-69%, 70-84%, and >85%. This means that each of the variables is accounting for different activity, so we will include all of them. Additionally, stress levels ("stress") could impact how many steps a student takes. There is a small distribution of Age, given that this dataset is about Freshman specifically, but it may make a difference. Gender may play a role. And finally distance from campus would likely impact number of steps. The ORU course also calculated a single score called life.ccore based on a 35-question survey. This included more inclusive elements of health, such as alcohol and drug use, psychological condition, spritiruality, and nutrition in addition to fitness. The lower the score, the healthier the person.
-
-Then, our outcome GPA could be affected by age, gender, study habits ("study"), major, and life.score.
-
-Based on gender stereotypes, we think that cardio, fatburn, and peak could be influenced by gender.
+Our exposure, the average number of daily steps, could depend on a number of things, including activity level. The variables *fatburn*, *cardio*, and *peak* measure the number of minutes in the following respective heart rates when compared to max heart rate: 50-69%, 70-84%, and >85%. This means that each of the variables is accounting for different activity, so we will include all of them. Additionally, stress levels (*stress*) could impact how many steps a student takes. There is a small distribution of *age*, given that this dataset is about Freshman specifically,
 
 ```{r, results = FALSE, warning=FALSE}
 ggplot(dat)+
   geom_histogram(bins = 30,
                  aes(x = age),
                  fill = "turquoise3")+
-  labs(title = "Frequency of Freshman Ages")
+  labs(title = "Frequency of Freshman Ages")+
+  labs(x = "Age", y = "Count")
 ```
+
+
+but it may make a difference. *Gender* may play a role. And finally *distance* from campus would likely impact number of steps. The ORU course also calculated a single score called *life.score* based on a 35-question survey. This included more comprehensive elements of health, such as alcohol and drug use, psychological condition, spirituality, and nutrition in addition to fitness. The lower the score, the healthier the person.
+
+Then, our outcome GPA could be affected by age, gender, study habits ("study"), major, and life.score.
+
+Based on gender stereotypes, we think that cardio, fatburn, and peak could be influenced by gender.
+
+
 ```{r}
 dag = dagify(
   stepsT ~ stress + distance + peak + fatburn + cardio + minutes +
@@ -221,11 +224,43 @@ ggplot(df_plot_ps)+
 
 ```
 
-Who is that High Step person with the lowest propensity score? I suspect this has to do with age, but we'll check it out.
+Who are those High Step people with the low propensity scores? I suspect this has to do with age, but we'll check it out. We start by sorting those with low propensity scores (< .45) from lowest to highest, and see that *age* and *gender* seem to move with propensity score.
 
 ```{r}
-dat %>% filter(.fitted < .3)
+lowps_indiv = dat %>% filter(.fitted < .45) %>% select(stepsT, age, gender, life.score, .fitted)
+arrange(lowps_indiv, .fitted)
 ```
+
+```{r}
+dat$lowps = ifelse(dat$.fitted > .45, 1, 0)
+```
+
+
+```{r}
+ggplot(dat, aes(x = age, y = life.score, color = lowps))+
+  geom_point()+
+  labs(x = "Age", y = "Life Score")+
+  ggtitle("Life Score vs. Age with Low Propensity Scores")
+  
+```
+
+
+```{r}
+ggplot(dat, aes(x = age, y = steps, color = lowps))+
+  geom_point()+
+  labs(x = "Age", y = "Steps")+
+  ggtitle("Steps vs. Age with Low Propensity Scores")
+```
+
+```{r}
+ggplot(dat, aes(x = gender, y = age, color = lowps))+
+  geom_point()+
+  labs(x = "Gender", y = "Age")+
+  ggtitle("Age vs. Gender with Low Propensity Scores")
+  
+```
+
+We see that lower propensity scores occur primarily with older students, and do not seem to be as strongly tied to *gender* or life score. While there are more males (0 indicator) with low propensity scores, *age* seems to be more relevant. So, when running the propensity score model with logistic regression, older students are more likely to belong to the control group, even if they do have a healthy lifestyle, as indicated by *life score*.
 
 
 ### Checking out the model
@@ -266,7 +301,7 @@ ggplot(
   ggtitle("Love Plot ATE vs Unweighted")
 ```
 
-It looks like the weighting brought the covariates closer to balance. All covariates are far below the rule of thumb 0.1 mark.
+It looks like the weighting brought the covariates closer to balance. All covariates are far below the rule of thumb 0.1 mark. 
 
 #### ECDF
 
@@ -301,7 +336,7 @@ ggplot(ecdf_1a, aes(x = age, y = cum_pct)) +
 
 Our continuous varaible *age* matches well, both before and after weighting. There doesn't seem to be any non-linearity present, so we will proceed to estimation!
 
-### Cause Estimates
+### Causal Estimates
 
 ```{r}
 dat %>%
@@ -311,7 +346,7 @@ dat %>%
   )
 ```
 
-This is our point estimate. On average, a ORU freshman who had daily average steps over 10,000 had a GPA 0.5 higher. That sounds impressive, but how certain are we about this?
+This is our point estimate. On average, a ORU freshman who had daily average steps over 10,000 had a GPA 0.5 points higher than a freshman in the control. That sounds impressive, but how certain are we about this?
 
 ```{r}
 fit_ipw <- function(split) {
@@ -347,7 +382,7 @@ boot_estimate = int_t(ipw_results, results) %>%
 boot_estimate
 ```
 
-We are 95% confident that the true causal effect of a daily average of more than 10,000 steps for ORU freshman is (0.3749, 0.6204). There is strong evidence that high volume daily steps has a positive impact on a student's GPA.
+Based on a bootstrap interval, we are 95% confident that the true causal effect of a daily average of more than 10,000 steps for ORU freshman is (0.3749, 0.6204). There is strong evidence that high volume daily steps has a positive impact on a student's GPA.
 
 
 ### But...What if...?
