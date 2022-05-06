@@ -2,9 +2,7 @@
 title: "Final Project"
 author: "Catherine Chalikian"
 date: "5/6/2022"
-output:
-  pdf_document: default
-  html_document: default
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
