@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Catherine Chalikian" />
+
+
+<title>Final Project</title>
+
+<script src="site_libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Final Project</h1>
+<h4 class="author">Catherine Chalikian</h4>
+<h4 class="date">5/6/2022</h4>
+
+</div>
+
+
+<div id="do-regular-steps-of-10000-average-steps-per-day-cause-a-higher-gpa-in-2017-freshman-at-oral-roberts-university" class="section level2">
+<h2>Do regular steps of &gt; 10,000 average steps per day cause a higher GPA in 2017 Freshman at Oral Roberts University?</h2>
+<p>To answer this question, we will look at a dataset of 581 incoming Freshman at Oral Robert University (ORU) in 2017. The dataset comes from a class called “Introduction to Whole Person Education”, which required several health measures, including a timed mile, daily steps tracked by Fitbit, and daily active minutes in different heart rate zones. The 10,000 step mark is both from common recommendations, as well as the course recommendation. To ensure that this was a reasonable measure–that there would be sufficient treatment and control populations–we looked at the histogram below. There are indeed numerous participants in both groups.</p>
+<pre class="r"><code>dat = read.csv(&quot;FitbitsAndGradesData_Fall2017.csv&quot;)
+names(dat) = tolower(names(dat))</code></pre>
+<pre class="r"><code>ggplot(dat)+
+  geom_histogram(bins = 30,
+                 aes(x = steps),
+                 fill = &quot;turquoise3&quot;)+
+  geom_label(
+    label = &quot;Average Daily Steps&quot;,
+    x = 16500,
+    y = 50
+  )+
+  labs(title = &quot;Frequency of Average Daily Steps&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="missing-data-nope." class="section level2">
+<h2>Missing Data? Nope.</h2>
+<pre class="r"><code># visualize data
+dat %&gt;% vis_dat()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>It appears that we no missing data, so we do not need to impute it.However, we do need to create a variable denoting treatment or control. As of now, our exposure <em>steps</em> is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make <em>gender</em> a factor variable so that we can get the most information during all of our analysis.</p>
+<pre class="r"><code># make our exposure var stepsT
+dat$stepsT = ifelse(dat$steps &gt; 10000, 1, 0)
+
+# make gender factor var
+dat$gender = factor(dat$gender)</code></pre>
+<p>Let’s move on and brainstorm how these variables might fit together.</p>
+</div>
+<div id="what-are-the-relationships-of-the-variables" class="section level2">
+<h2>What are the relationships of the variables?</h2>
+<p>Our exposure, the average number of daily steps, could depend on a number of things, including activity level. The variables <em>fatburn</em>, <em>cardio</em>, and <em>peak</em> measure the number of minutes in the following respective heart rates when compared to max heart rate: 50-69%, 70-84%, and &gt;85%. This means that each of the variables is accounting for different activity, so we will include all of them. Additionally, stress levels (<em>stress</em>) could impact how many steps a student takes. There is a small distribution of <em>age</em>, given that this dataset is about Freshman specifically,</p>
+<pre class="r"><code>ggplot(dat)+
+  geom_histogram(bins = 30,
+                 aes(x = age),
+                 fill = &quot;turquoise3&quot;)+
+  labs(title = &quot;Frequency of Freshman Ages&quot;)+
+  labs(x = &quot;Age&quot;, y = &quot;Count&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>but it may make a difference. <em>Gender</em> may play a role. And finally <em>distance</em> from campus would likely impact number of steps. The ORU course also calculated a single score called <em>life score</em> based on a 35-question survey. This included more comprehensive elements of health, such as alcohol and drug use, psychological condition, spirituality, and nutrition in addition to fitness. The lower the score, the healthier the person.</p>
+<p>Then, our outcome <em>GPA</em> could be affected by <em>age</em>, <em>gender</em>, study habits (<em>study</em>), <em>major</em>, and <em>life score</em>.</p>
+<p>Based on gender stereotypes, we think that <em>cardio</em>, <em>fatburn</em>, and <em>peak</em> could be influenced by <em>gender</em>.</p>
+<pre class="r"><code>dag = dagify(
+  stepsT ~ stress + distance + peak + fatburn + cardio + minutes +
+    age + gender + life.score,
+  gpa ~ study + major + age + gender + life.score,
+  cardio ~ gender,
+  fatburn ~ gender,
+  peak ~ gender,
+  exposure = &quot;stepsT&quot;,
+  outcome = &quot;gpa&quot;
+)
+
+dag %&gt;%
+  ggdag()+
+  geom_dag_node(color = &quot;turquoise3&quot;)+
+  geom_dag_text(color = &quot;gray40&quot;) +
+  theme_dag_gray()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>We can visualize the previously described relashionships with the above Directed Acylcic Graph (DAG). Operations on this figure can help us identify which variables are confounders, influencing both the exposure and the outcome, as well as identify which covariates we need to adjust for to effectively close off this influence. So, that’s what we’ll do next with our open paths and adjustment sets.</p>
+<pre class="r"><code>dag %&gt;% ggdag_paths()+
+  geom_dag_node(color = &quot;turquoise3&quot;)+
+  geom_dag_text(color = &quot;gray40&quot;) # add labels</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>There are numerous open or backdoor paths that could lead us to a spurious result. Now let’s see what we should adjust for to avoid such calamity.</p>
+<pre class="r"><code>dag %&gt;% ggdag_adjustment_set()+
+  geom_dag_text(color = &quot;gray40&quot;) # add labels</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Our adjustment set is composed of the covariates <em>age</em>, <em>gender</em>, and <em>life.score</em>. We know that if assignment to treatment is unconfounded given the full set of covariates, then the assignment is also unconfounded by conditioning only on the propensity score, so we condition on the propensity score. This means that it’s time to build a propensity score model!</p>
+<div id="propensity-scores-and-more" class="section level3">
+<h3>Propensity Scores and More</h3>
+<pre class="r"><code># propensity score, unweighted
+glm1 = glm(stepsT ~ age + gender + life.score,
+           data = dat,
+           family = binomial())
+
+# adding propensity scores to model
+dat = glm1 %&gt;% augment(type.predict = &quot;response&quot;,
+                       data = dat)</code></pre>
+<p>Let’s see how our populations compare without weighting.</p>
+<pre class="r"><code>svy_des = svydesign(
+  ids = ~1,
+  data = dat
+)
+
+table1 = svy_des %&gt;% tbl_svysummary(
+  by = stepsT,
+  include = c(&quot;age&quot;, &quot;gender&quot;, &quot;life.score&quot;)
+) %&gt;%
+  add_overall()
+table1</code></pre>
+<div id="asnvynhzru" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#asnvynhzru .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#asnvynhzru .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#asnvynhzru .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#asnvynhzru .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#asnvynhzru .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#asnvynhzru .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#asnvynhzru .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#asnvynhzru .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#asnvynhzru .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#asnvynhzru .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#asnvynhzru .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#asnvynhzru .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#asnvynhzru .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#asnvynhzru .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#asnvynhzru .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#asnvynhzru .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#asnvynhzru .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#asnvynhzru .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#asnvynhzru .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#asnvynhzru .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#asnvynhzru .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#asnvynhzru .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#asnvynhzru .gt_left {
+  text-align: left;
+}
+
+#asnvynhzru .gt_center {
+  text-align: center;
+}
+
+#asnvynhzru .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#asnvynhzru .gt_font_normal {
+  font-weight: normal;
+}
+
+#asnvynhzru .gt_font_bold {
+  font-weight: bold;
+}
+
+#asnvynhzru .gt_font_italic {
+  font-style: italic;
+}
+
+#asnvynhzru .gt_super {
+  font-size: 65%;
+}
+
+#asnvynhzru .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#asnvynhzru .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#asnvynhzru .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#asnvynhzru .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#asnvynhzru .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>Overall</strong>, N = 581<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>0</strong>, N = 267<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>1</strong>, N = 314<sup class="gt_footnote_marks">1</sup></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">age</td>
+<td class="gt_row gt_center">18 (18, 19)</td>
+<td class="gt_row gt_center">18 (18, 19)</td>
+<td class="gt_row gt_center">18 (18, 19)</td></tr>
+    <tr><td class="gt_row gt_left">gender</td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td>
+<td class="gt_row gt_center"></td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">0</td>
+<td class="gt_row gt_center">237 (41%)</td>
+<td class="gt_row gt_center">106 (40%)</td>
+<td class="gt_row gt_center">131 (42%)</td></tr>
+    <tr><td class="gt_row gt_left" style="text-align: left; text-indent: 10px;">1</td>
+<td class="gt_row gt_center">344 (59%)</td>
+<td class="gt_row gt_center">161 (60%)</td>
+<td class="gt_row gt_center">183 (58%)</td></tr>
+    <tr><td class="gt_row gt_left">life.score</td>
+<td class="gt_row gt_center">69 (57, 83)</td>
+<td class="gt_row gt_center">71 (57, 84)</td>
+<td class="gt_row gt_center">68 (58, 82)</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="4"><sup class="gt_footnote_marks">1</sup> Median (IQR); n (%)</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<p>The treatment population is larger than the control. Since the data is on an incoming Freshman class, it is unsurprising that the distributions of age are the same. With males as “0”, we see that more females were assigned to the treatment group.</p>
+<p>We are going to use Average Treatment Effect of the Control (ATE) to weight these measures, because we want to compare the population as a whole.</p>
+<pre class="r"><code># add at3 weights
+dat = dat %&gt;%
+  mutate(w_ate = stepsT/.fitted + 
+           (1 - stepsT)/(1 - .fitted))</code></pre>
+<pre class="r"><code>svy_des = svydesign(
+  ids = ~1,
+  data = dat,
+  weights = ~w_ate
+)
+
+wtable1 = svy_des %&gt;% 
+  tbl_svysummary(by = stepsT,
+                 include = c(&quot;age&quot;, &quot;gender&quot;, &quot;life.score&quot;)) %&gt;%
+  add_overall()
+
+wtable1</code></pre>
+<p>Let’s see how the populations look now.</p>
+<pre class="r"><code># prepare data for unweighted mirror plot
+df_plot_ps = dat %&gt;%
+  tidyr::pivot_wider(names_from = stepsT,
+                     values_from = .fitted,
+                     names_prefix = &quot;steps_p&quot;)
+# plot
+ggplot(df_plot_ps)+
+  geom_histogram(bins = 25,
+                 aes(x = steps_p1),
+                 fill = &quot;turquoise3&quot;)+
+  geom_histogram(bins = 25,
+                 alpha = .5,
+                 aes(x = steps_p1,
+                     weight = dat$w_ate),
+                 fill = &quot;turquoise3&quot;)+
+  geom_histogram(bins = 25,
+                 aes(x = steps_p0,
+                     y = -stat(count)),
+                 fill = &quot;tomato3&quot;)+
+  geom_histogram(bins = 25,
+                 alpha = .5,
+                 aes(x = steps_p0,
+                     weight = dat$w_ate,
+                     y = -stat(count)),
+                 fill = &quot;tomato3&quot;)+
+  scale_y_continuous(&quot;count&quot;, label = abs) + 
+  scale_x_continuous(&quot;propensity score&quot;) +
+  geom_label(
+    label = &quot;&gt; 10,000 Steps&quot;, 
+    # x and y gives where the label will land
+    x = 0.4,
+    y = 35,
+  ) + 
+  geom_label(
+    label = &quot;&lt; 10,000 Steps&quot;,
+    x = 0.4, 
+    y = -42
+  ) + 
+  labs(title = &quot;Weighted Distributions of High and Low Volume Steppers&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Who are those High Step people with the low propensity scores? I suspect this has to do with age, but we’ll check it out. We start by sorting those with low propensity scores (&lt; .45) from lowest to highest, and see that <em>age</em> and <em>gender</em> seem to move with propensity score.</p>
+<pre class="r"><code>lowps_indiv = dat %&gt;% filter(.fitted &lt; .45) %&gt;% select(stepsT, age, gender, 
+                                                       life.score, .fitted)
+arrange(lowps_indiv, .fitted)</code></pre>
+<pre><code>## # A tibble: 7 × 5
+##   stepsT   age gender life.score .fitted
+##    &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;       &lt;int&gt;   &lt;dbl&gt;
+## 1      1    40 0              59   0.218
+## 2      0    36 0              91   0.237
+## 3      0    35 0              73   0.271
+## 4      1    24 0             124   0.383
+## 5      1    25 1              70   0.416
+## 6      0    24 1              68   0.436
+## 7      0    24 1              64   0.442</code></pre>
+<pre class="r"><code>dat$lowps = ifelse(dat$.fitted &gt; .45, 1, 0)</code></pre>
+<pre class="r"><code>ggplot(dat, aes(x = age, y = life.score, color = lowps))+
+  geom_point()+
+  labs(x = &quot;Age&quot;, y = &quot;Life Score&quot;)+
+  ggtitle(&quot;Life Score vs. Age with Low Propensity Scores&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(dat, aes(x = age, y = steps, color = lowps))+
+  geom_point()+
+  labs(x = &quot;Age&quot;, y = &quot;Steps&quot;)+
+  ggtitle(&quot;Steps vs. Age with Low Propensity Scores&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(dat, aes(x = gender, y = age, color = lowps))+
+  geom_point()+
+  labs(x = &quot;Gender&quot;, y = &quot;Age&quot;)+
+  ggtitle(&quot;Age vs. Gender with Low Propensity Scores&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>We see that lower propensity scores occur primarily with older students, and do not seem to be as strongly tied to <em>gender</em> or <em>life score</em>. While there are more males (0 indicator) with low propensity scores, <em>age</em> seems to be more relevant. So, when running the propensity score model with logistic regression, older students are more likely to belong to the control group, even if they do have a healthy lifestyle, as indicated by <em>life score</em>.</p>
+</div>
+<div id="checking-out-the-model" class="section level3">
+<h3>Checking out the model</h3>
+<p>Okay, we weighted the populations so that each look like the treated group, but is it a valid model? We’re going to run some tests to find out.</p>
+<div id="love-plot" class="section level4">
+<h4>Love Plot</h4>
+<pre class="r"><code># add smds to model
+smds = dat %&gt;%
+  summarize(
+    across(
+      c(&quot;age&quot;, &quot;gender&quot;, &quot;life.score&quot;),
+      list(unweighted = ~smd(.x, stepsT)$estimate,
+           att.weighted = ~smd(.x, stepsT, w_ate)$estimate)
+    )
+  )
+
+plot_df_smds = smds %&gt;%
+  pivot_longer(
+    everything(),
+    values_to = &quot;SMD&quot;,
+    names_to = c(&quot;variable&quot;, &quot;Method&quot;),
+    names_pattern = &quot;(.*)_(.*)&quot;) %&gt;%
+  arrange(desc(Method), abs(SMD)) %&gt;%
+  mutate(variable = fct_inorder(variable))
+
+ggplot(
+  data = plot_df_smds,
+  aes(x = abs(SMD), y = variable,
+      group = Method, color = Method)
+) +
+  geom_line(orientation = &quot;y&quot;)+
+  geom_point()+
+  geom_vline(xintercept = .1,
+             color = &quot;black&quot;, size = .1)+
+  ggtitle(&quot;Love Plot ATE vs Unweighted&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>It looks like the weighting brought the covariates closer to balance. All covariates are far below the rule of thumb 0.1 mark.</p>
+</div>
+<div id="ecdf" class="section level4">
+<h4>ECDF</h4>
+<pre class="r"><code># create weighted cdf plot for age and income
+
+# df for exposed, age
+ecdf_1a = dat %&gt;%
+  filter(stepsT == 1) %&gt;%
+  arrange(age) %&gt;%
+  mutate(cum_pct = cumsum(w_ate)/sum(w_ate))
+
+# df for unexposed, age
+ecdf_0a = dat %&gt;%
+  filter(stepsT == 0) %&gt;%
+  arrange(age) %&gt;%
+  mutate(cum_pct = cumsum(w_ate)/sum(w_ate))
+
+#plot
+ggplot(ecdf_1a, aes(x = age, y = cum_pct)) +
+  geom_line(color = &quot;Turquoise3&quot;) +
+  scale_color_manual(&quot;&gt; 10,000 Steps&quot;,
+                     values = c(&quot;Blue&quot;, &quot;Brown&quot;),
+                     labels = c(&quot;No&quot;, &quot;Yes&quot;))+
+  geom_line(data = ecdf_0a,
+            aes(x = age, y = cum_pct),
+            color = &quot;Blue&quot;) +
+  xlab(&quot;Age&quot;) +
+  ylab(&quot;Proportion &lt;= x&quot;)+
+  ggtitle(&quot;Weighted ECDF for Age&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>Our continuous variable <em>age</em> matches well, both before and after weighting. There doesn’t seem to be any non-linearity present, so we will proceed to estimation!</p>
+</div>
+</div>
+<div id="causal-estimates" class="section level3">
+<h3>Causal Estimates</h3>
+<pre class="r"><code>dat %&gt;%
+  summarise(
+    ate = sum(gpa*stepsT*w_ate)/sum(stepsT*w_ate) - sum(gpa*(1 - stepsT)*w_ate)/
+      sum((1-stepsT)*w_ate)
+  )</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##     ate
+##   &lt;dbl&gt;
+## 1 0.500</code></pre>
+<p>This is our point estimate. On average, a ORU freshman who had daily average steps over 10,000 had a GPA 0.5 points higher than a freshman in the control. That sounds impressive, but how certain are we about this?</p>
+<pre class="r"><code>fit_ipw &lt;- function(split) {
+  .df &lt;- analysis(split)
+  
+  # fit propensity score model
+  propensity_model &lt;- glm(
+    stepsT ~ age + gender + life.score,
+    family = binomial(), 
+    data = .df
+  )
+  # calculate inverse probability weights
+  .df &lt;- propensity_model %&gt;% 
+    
+    # get propensity scores 
+    augment(type.predict = &quot;response&quot;, data = .df) %&gt;% 
+    # add ATE to df
+    mutate(wts = stepsT / .fitted + (1 - stepsT) / (1  - .fitted)) 
+  
+  # fit outcome model
+  lm(gpa ~ stepsT, data = .df, weights = wts) %&gt;%
+    tidy()
+}
+
+#fit ipw model
+ipw_results = bootstraps(dat, 1000, apparent = TRUE) %&gt;%
+  mutate(results = map(splits, fit_ipw))
+
+# get t-statistic-based CIs
+boot_estimate = int_t(ipw_results, results) %&gt;%
+  filter(term == &quot;stepsT&quot;)
+
+boot_estimate</code></pre>
+<pre><code>## # A tibble: 1 × 6
+##   term   .lower .estimate .upper .alpha .method  
+##   &lt;chr&gt;   &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;    
+## 1 stepsT  0.379     0.500  0.634   0.05 student-t</code></pre>
+<p>Based on a bootstrap interval, we are 95% confident that the true causal effect of a daily average of more than 10,000 steps for ORU freshman is (0.3749, 0.6204). There is strong evidence that high volume daily steps has a positive impact on a student’s GPA.</p>
+</div>
+<div id="butwhat-if" class="section level3">
+<h3>But…What if…?</h3>
+<p>It seems that, conditioning on <em>age</em>, <em>gender</em>, and <em>life score</em>, we have a causal effect, but what if we missed a confounder? How would the model change? It’s time for sensitivity analysis. We are going to look at different standardized mean differences (SMDs).</p>
+<pre class="r"><code>smds = c(.25, .5, .75)
+tips1 = tip_lm(effect = .5,
+        smd = smds) 
+tips1</code></pre>
+<pre class="r"><code>tips1 %&gt;%
+  ggplot()+
+  geom_line(aes(x = smds, y = outcome_association))+
+  xlab(&quot;SMDs&quot;) +
+  ylab(&quot;Outcome Association&quot;)+
+  ggtitle(&quot;Outcome Association vs. SMD&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p>The above analysis uses the point estimate of 0.5 and confidence of 95%. When the SMD is smaller, measured at 0.25, if we had one missing (unmeasured) confounder, the confounder would need to have an outcome association of 2 to “tip” the outcome effect to 0. At this point, the observed effect would no longer be significant. If the missing confounder had an SMD of 0.5, it would need an association of 1 to render the outcome effect null. Along the same lines, with a large SMD of 0.75, the unmeasured confounder would need an outcome association of 0.667 to negate the outcome effect.</p>
+<p>Because we are looking at a causal effect on GPA, there is a relatively small domain. Typically, GPAs range from 0 to 4.0, so an outcome association of 2 and 1 is large. We would need a huge, unmeasured confounder to nullify our results.</p>
+</div>
+<div id="next-steps" class="section level3">
+<h3>Next Steps</h3>
+<p>It’s pretty cool that we found a causal effect, but I wonder, does a large daily step volume cause some phsyiological change that improves cognition and therefore GPA? Or is is it specifically this level of daily steps that impacts GPA? I other words, what is the causal mechanism? We would need to do mediation analysis to determine this.</p>
+<div id="sources" class="section level4">
+<h4>Sources</h4>
+<p>Allie M. Broaddus, Brandon J. Jaquis, Colt B. Jones, Scarlet R. Jost, Andrew S.I.D. Lang, Ailin Li, Qiwen Li, Philip P. Nelson &amp; Esther M. Spear (2019): Fitbits, field-tests, and grades: The effects of a healthy and physically active lifestyle on the academic performance of first year college students, International Journal of Sport and Exercise Psychology, DOI: 10.1080/1612197X.2019.1623062, <a href="https://www.tandfonline.com/doi/full/10.1080/1612197X.2019.1623062" class="uri">https://www.tandfonline.com/doi/full/10.1080/1612197X.2019.1623062</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
