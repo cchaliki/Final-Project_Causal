@@ -56,7 +56,7 @@ ggplot(dat)+
 dat %>% vis_dat()
 ```
 
-It appears that we no missing data, so we do not need to impute it. However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make *gender* a factor variable so that we can get the most information during all of our analysis. 
+It appears that we have no missing data, so we do not need to impute it. However, we do need to create a variable denoting treatment or control. As of now, our exposure *steps* is a continuous variable, but we want to know whether or not the participant is in the treatment group or not. We must also make *gender* a factor variable so that we can get the most information during all of our analysis. 
 
 ```{r}
 # make our exposure var stepsT
